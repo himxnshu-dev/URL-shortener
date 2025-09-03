@@ -6,9 +6,10 @@ const urlRoute = require("./routes/url");
 const staticUrl = require("./routes/staticUrl");
 const userRoute = require("./routes/user");
 const path = require("path");
+require('dotenv').config()
 
 // Connection with DB
-connectMongoDB("mongodb+srv://URL-Shortener:myurlshortenerapp@cluster0.bjz00mg.mongodb.net/URL-Shortener")
+connectMongoDB(process.env.MONGODB_URI)
   .then(() => console.log("DB Connected!"))
   .catch((err) => console.log("Error:", err));
 
