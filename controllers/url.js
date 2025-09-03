@@ -4,7 +4,7 @@ const express = require("express");
 
 const handleGenerateShortURL = async (req, res) => {
   const {body} = req;
-  const shortID = nanoid(8);
+  const shortID = nanoid(7);
 
   if (!body.url) {
     return res.status(400).json({
@@ -29,7 +29,7 @@ const handleGetFromShortURL = async (req, res) => {
   const url = await URL.findOneAndUpdate(
     {shortId},
     {
-      $push: {
+      "$push": {
         visitHistory: {
           timestamp: Date.now(),
         },

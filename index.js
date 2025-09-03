@@ -8,7 +8,7 @@ const userRoute = require("./routes/user");
 const path = require("path");
 
 // Connection with DB
-connectMongoDB("mongodb://127.0.0.1:27017/URL-shortener")
+connectMongoDB("mongodb+srv://URL-Shortener:myurlshortenerapp@cluster0.bjz00mg.mongodb.net/URL-Shortener")
   .then(() => console.log("DB Connected!"))
   .catch((err) => console.log("Error:", err));
 
