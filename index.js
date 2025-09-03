@@ -15,10 +15,11 @@ connectMongoDB("mongodb+srv://URL-Shortener:myurlshortenerapp@cluster0.bjz00mg.m
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(express.static("public"));
 
 // ejs setup
 app.set("view engine", "ejs");
-app.set("views", path.resolve("./views"));
+app.set("views", path.resolve("./views/src"));
 
 // Router
 app.use("/url", urlRoute);
