@@ -16,8 +16,15 @@
     <form method="post" action="/user/signin">
       <label for="username">Email</label>
       <input type="text" name="email" required id="username"/>
-      <label for="user">Password</label>
-      <input type="text" required name="password" id="user"/>
+      <% if (locals.errors && locals.errors.email) { %>
+      <p><%- errors.email._errors[0] %></p>
+      <% } %>
+
+      <label for="password">Password</label>
+      <input type="text" name="password" id="password" />
+      <% if (locals.errors && locals.errors.password) { %>
+      <p><%- errors.password._errors[0] %></p>
+      <% } %>
       <button>submit</button>
     </form>
   </body>
