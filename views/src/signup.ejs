@@ -9,7 +9,7 @@
     <h2>User Signup</h2>
 
     <% if (locals.error) { %>
-      <p class="error-message"><%= error %></p>
+    <p class="error-message"><%= error %></p>
     <% } %>
 
     <form method="post" action="/user/signup">
@@ -22,27 +22,32 @@
         value="<%= locals.name || '' %>"
       />
       <% if (locals.errors && locals.errors.name) { %>
-        <p class="error-message"><%- errors.name._errors[0] %></p>
+      <p class="error-message"><%- errors.name._errors[0] %></p>
       <% } %>
 
       <label for="email">E-mail</label>
-      <input 
-        type="text" 
-        name="email" 
-        id="email" 
+      <input
+        type="text"
+        name="email"
+        id="email"
         value="<%= locals.email || '' %>"
       />
       <% if (locals.errors && locals.errors.email) { %>
-        <p class="error-message"><%- errors.email %></p>
+      <p class="error-message"><%- errors.email %></p>
       <% } %>
 
       <label for="password">Password</label>
       <input type="password" name="password" id="password" />
       <% if (locals.errors && locals.errors.password) { %>
-        <p class="error-message"><%- errors.password %></p>
+      <p class="error-message"><%- errors.password %></p>
       <% } %>
 
       <button type="submit">Signup</button>
     </form>
+    <div class="signin">
+      <p>
+        Already signed in? Click <a href="/user/signin">here</a> to sign in!
+      </p>
+    </div>
   </body>
 </html>
