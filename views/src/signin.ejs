@@ -17,13 +17,13 @@
       <label for="username">Email</label>
       <input type="text" name="email" required id="username"/>
       <% if (locals.errors && locals.errors.email) { %>
-      <p><%- errors.email._errors[0] %></p>
+      <p><%- errors.email %></p>
       <% } %>
 
       <label for="password">Password</label>
       <input type="text" name="password" id="password" />
       <% if (locals.errors && locals.errors.password) { %>
-      <p><%- errors.password._errors[0] %></p>
+      <p><%- errors.password %></p>
       <% } %>
       <button>submit</button>
     </form>

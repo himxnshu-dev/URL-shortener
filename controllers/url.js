@@ -1,30 +1,36 @@
 const URL = require("../models/url");
 const {nanoid} = require("nanoid");
-const express = require("express");
+const {getUser} = require('../services/auth')
 
 const handleGenerateShortURL = async (req, res) => {
   const {body} = req;
   try {
+    console.log("--- 2. GENERATE URL ATTEMPT ---");
+    console.log("Cookies received by server:", req.cookies);
     const shortID = nanoid(7);
+    console.log("ShortID created: ", shortID)
 
-    if (!req.session.userId) {
+    const sessionId = req.cookies.uid
+    if (!sessionId) {
+        console.log("ERROR: No sessionId in cookie. Redirecting to signin.");
         return res.render('signin')
     }
+    const user = getUser(sessionId)
+    console.log("User retrieved from service:", user);
+    if (!user) {
+        console.log("ERROR: No user found for this session ID. Redirecting to signin.");
+        return res.render('signin')
+    }
+    console.log(user._id, req.user._id)
 
     await URL.create({
       shortId: shortID,
       redirectURL: body.url,
       visitHistory: [],
-      createdBy: req.session.userId
+      createdBy: user._id
     });
 
-    // 3. On success, render the page (no need for .status(201))
-    // return res.render("home", {
-    //   id: shortID,
-    //   urls: allUrls
-    // });
-
-    return res.redirect(`/url?id=${shortID}`)
+    return res.redirect(`/?id=${shortID}`)
 
   } catch (error) {
     // Log the error for your own debugging

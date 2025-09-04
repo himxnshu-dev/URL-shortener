@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const z = require("zod");
+const {v4: uuidv4} = require('uuid')
+const {setUser} = require('../services/auth')
 
 // Input validation using zod
 const emailValidation = z
@@ -70,7 +72,7 @@ const handleUserSignin = async (req, res) => {
   const inputValidate = signinValidationSchema.safeParse({email, password});
   if (!inputValidate.success) {
     const fieldErrors = inputValidate.error.flatten().fieldErrors;
-    return res.render("signup", {
+    return res.render("signin", {
       errors: fieldErrors,
       email: email,
     });
@@ -88,12 +90,14 @@ const handleUserSignin = async (req, res) => {
   }
 
   // Store the login info in the local session storage
-  req.session.userId = user._id;
-  console.log(req.session, req.session.id, req.session.userId);
+//   req.session.userId = user._id;
+//   console.log(req.session, req.session.id, req.session.userId);
 
-  return res.status(200).render("home", {
-    name: user.name,
-  });
-};
+  const sessionId = uuidv4()
+  setUser(sessionId, user)
+  res.cookie('uid', sessionId)
+
+  return res.status(200).redirect("/");
+}
 
 module.exports = {handleNewUserSignup, handleUserSignin};
