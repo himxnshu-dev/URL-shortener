@@ -7,6 +7,7 @@ const staticUrl = require("./routes/staticUrl");
 const userRoute = require("./routes/user");
 const path = require("path");
 require('dotenv').config()
+const session = require('express-session');
 
 // Connection with DB
 connectMongoDB(process.env.MONGODB_URI)
@@ -17,6 +18,11 @@ connectMongoDB(process.env.MONGODB_URI)
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static("public"));
+app.use(session({
+  secret: 'eyTk*5Z9PWh.GV!gTk*5Z9PWh.GV!g', // A random string to sign the session ID cookie
+  resave: false,
+  saveUninitialized: false,
+}));
 
 // ejs setup
 app.set("view engine", "ejs");

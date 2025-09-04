@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signin</title>
+  </head>
+  <body>
+    <h2>URL Shortener</h2>
+    <% if (locals.msg) { %>
+     <%= msg %>
+    <% } %>
+
+    <h3>Login Below</h3>
+
+    <form method="post" action="/user/signin">
+      <label for="username">Email</label>
+      <input type="text" name="email" required id="username"/>
+      <label for="user">Password</label>
+      <input type="text" required name="password" id="user"/>
+      <button>submit</button>
+    </form>
+  </body>
+</html>

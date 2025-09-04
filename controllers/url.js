@@ -4,23 +4,37 @@ const express = require("express");
 
 const handleGenerateShortURL = async (req, res) => {
   const {body} = req;
-  const shortID = nanoid(7);
+  try {
+    const shortID = nanoid(7);
 
-  if (!body.url) {
-    return res.status(400).json({
-      msg: "A valid URL is required!",
+    if (!req.session.userId) {
+        return res.render('signin')
+    }
+
+    await URL.create({
+      shortId: shortID,
+      redirectURL: body.url,
+      visitHistory: [],
+      createdBy: req.session.userId
+    });
+
+    // 3. On success, render the page (no need for .status(201))
+    // return res.render("home", {
+    //   id: shortID,
+    //   urls: allUrls
+    // });
+
+    return res.redirect(`/url?id=${shortID}`)
+
+  } catch (error) {
+    // Log the error for your own debugging
+    console.error("Error creating short URL:", error); 
+    
+    // Render the home page with a generic error for the user
+    return res.status(500).render("home", {
+      error: "Something went wrong on our end. Please try again.",
     });
   }
-
-  await URL.create({
-    shortId: shortID,
-    redirectURL: body.url,
-    visitHistory: [],
-  });
-
-  return res.status(201).render("home", {
-    id: shortID,
-  });
 };
 
 const handleGetFromShortURL = async (req, res) => {
@@ -33,7 +47,7 @@ const handleGetFromShortURL = async (req, res) => {
         visitHistory: {
           timestamp: Date.now(),
         },
-      },
+      }
     }
   );
 

@@ -16,6 +16,10 @@
     <div class="container">
       <h1>URL Shortener</h1>
 
+      <% if (locals.name) { %>
+       <p>Welcome, <%= name %></p>
+      <% } %>
+
       <% if (locals.id) { %>
       <div class="generated-url">
         <p>
