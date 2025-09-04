@@ -5,8 +5,6 @@ const {getUser} = require('../services/auth')
 const handleGenerateShortURL = async (req, res) => {
   const {body} = req;
   try {
-    console.log("--- 2. GENERATE URL ATTEMPT ---");
-    console.log("Cookies received by server:", req.cookies);
     const shortID = nanoid(7);
     console.log("ShortID created: ", shortID)
 
@@ -16,7 +14,6 @@ const handleGenerateShortURL = async (req, res) => {
         return res.render('signin')
     }
     const user = getUser(sessionId)
-    console.log("User retrieved from service:", user);
     if (!user) {
         console.log("ERROR: No user found for this session ID. Redirecting to signin.");
         return res.render('signin')

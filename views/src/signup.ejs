@@ -3,51 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Signup Page</title>
+    <title>Signup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/auth.css" />
   </head>
   <body>
-    <h2>User Signup</h2>
+    <div class="container">
+      <h1>Create an Account</h1>
 
-    <% if (locals.error) { %>
-    <p class="error-message"><%= error %></p>
-    <% } %>
-
-    <form method="post" action="/user/signup">
-      <label for="fullName">Full Name</label>
-      <input
-        type="text"
-        name="name"
-        id="fullName"
-        placeholder="enter your name"
-        value="<%= locals.name || '' %>"
-      />
-      <% if (locals.errors && locals.errors.name) { %>
-      <p class="error-message"><%- errors.name._errors[0] %></p>
+      <% if (locals.error) { %>
+      <p class="error-message"><%= error %></p>
       <% } %>
 
-      <label for="email">E-mail</label>
-      <input
-        type="text"
-        name="email"
-        id="email"
-        value="<%= locals.email || '' %>"
-      />
-      <% if (locals.errors && locals.errors.email) { %>
-      <p class="error-message"><%- errors.email %></p>
-      <% } %>
+      <form method="post" action="/user/signup">
+        <label for="fullName">Full Name</label>
+        <input
+          type="text"
+          name="name"
+          id="fullName"
+          placeholder="e.g., John Doe"
+          value="<%= locals.name || '' %>"
+        />
+        <% if (locals.errors && locals.errors.name) { %>
+        <p class="error-message"><%- errors.name._errors[0] %></p>
+        <% } %>
 
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" />
-      <% if (locals.errors && locals.errors.password) { %>
-      <p class="error-message"><%- errors.password %></p>
-      <% } %>
+        <label for="email">E-mail</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="e.g., john.doe@example.com"
+          value="<%= locals.email || '' %>"
+        />
+        <% if (locals.errors && locals.errors.email) { %>
+        <p class="error-message"><%- errors.email %></p>
+        <% } %>
 
-      <button type="submit">Signup</button>
-    </form>
-    <div class="signin">
-      <p>
-        Already signed in? Click <a href="/user/signin">here</a> to sign in!
-      </p>
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          name="password" 
+          id="password" 
+          placeholder="Choose a strong password"
+        />
+        <% if (locals.errors && locals.errors.password) { %>
+        <p class="error-message"><%- errors.password %></p>
+        <% } %>
+
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <div class="switch-form">
+        <p>
+          Already have an account?
+          <a href="/user/signin">Sign in here!</a>
+        </p>
+      </div>
     </div>
   </body>
 </html>
