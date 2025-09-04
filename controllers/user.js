@@ -1,12 +1,12 @@
 const User = require("../models/user");
 const z = require("zod");
-const {v4: uuidv4} = require('uuid')
-const {setUser} = require('../services/auth')
+const {v4: uuidv4} = require("uuid");
+const {setUser} = require("../services/auth");
 
 // Input validation using zod
 const emailValidation = z
   .string()
-  .email({ message: "Invalid email format" })
+  .email({message: "Invalid email format"})
   // This regex checks for a standard email pattern: user@domain.extension
   .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
     message: "Email must be a valid address with a domain.",
@@ -90,14 +90,20 @@ const handleUserSignin = async (req, res) => {
   }
 
   // Store the login info in the local session storage
-//   req.session.userId = user._id;
-//   console.log(req.session, req.session.id, req.session.userId);
+  //   req.session.userId = user._id;
+  //   console.log(req.session, req.session.id, req.session.userId);
 
-  const sessionId = uuidv4()
-  setUser(sessionId, user)
-  res.cookie('uid', sessionId)
+  const sessionId = uuidv4();
+  setUser(sessionId, user);
+  res.cookie("uid", sessionId);
 
   return res.status(200).redirect("/");
-}
+};
 
-module.exports = {handleNewUserSignup, handleUserSignin};
+const handleUserLogout = (req, res) => {
+  res.clearCookie("uid");
+
+  return res.redirect("/signin");
+};
+
+module.exports = {handleNewUserSignup, handleUserSignin, handleUserLogout};
