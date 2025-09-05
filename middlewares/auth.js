@@ -1,23 +1,21 @@
-const {getUser} = require('../services/auth')
+const {getUser} = require("../services/auth");
 
-async function restrictToLoggedIn(req, res ,next) {
-    // console.log("--- AUTH MIDDLEWARE ---");
-    const token = req.cookies.uid;
-    // console.log("Token received from browser:", token);
-    if (!token) {
-        console.log("No token found, redirecting to signin.");
-        return res.redirect('/signin')
-    }
+const authenticationCheck = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return next();
 
-    const user = getUser(token)
-    console.log("User decoded from token:", user);
-    if (!user) {
-        console.log("Token invalid or expired, redirecting to signup.");
-        return res.redirect('/signin')
-    }
+  const user = getUser(token);
+  req.user = user;
 
-    req.user = user;
-    next()
-}
+  next();
+};
 
-module.exports = {restrictToLoggedIn}
+const restrictTo = (roles = []) => {
+  return function (req, res, next) {
+    if (!req.user) return res.redirect("/signin");
+    if (!roles.includes(req.user.role)) return res.end("UNAUTHORIZED!");
+    next();
+  };
+};
+
+module.exports = {authenticationCheck, restrictTo};

@@ -2,32 +2,18 @@ const express = require("express");
 const router = express.Router();
 const URL = require("../models/url");
 const {getUser} = require("../services/auth");
-const {name} = require("ejs");
+const { restrictTo } = require("../middlewares/auth");
 
-router.get("/", async (req, res) => {
-//   console.log("--- STATIC URL CHECKS ---");
-  // verify checks and getting the user
-  const token = req.cookies.uid;
-//   console.log("Token received from browser:", token);
-  if (!token) {
-    console.log("No token found, redirecting to signup.");
-    return res.render("signup");
-  }
-  const user = getUser(token);
-//   console.log("User decoded from token:", user);
-  if (!user) {
-    console.log("Token invalid or expired, redirecting to signup.");
-    return res.render("signup");
-  }
-
-  const allUserUrls = await URL.find({createdBy: user._id});
+router.get("/", restrictTo(['NORMAL']), async (req, res) => {
+  const allUserUrls = await URL.find({createdBy: req.user._id});
   const shortUrl = req.query.id;
 //   console.log(user.name)
 
   return res.render("home", {
     urls: allUserUrls,
     id: shortUrl,
-    name: user.name,
+    name: req.user.name,
+    role: req.user.role
   });
 });
 

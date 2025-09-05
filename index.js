@@ -9,7 +9,7 @@ const path = require("path");
 require('dotenv').config()
 // const session = require('express-session');
 const cookieParser = require('cookie-parser')
-const {restrictToLoggedIn} = require('./middlewares/auth')
+const {authenticationCheck, restrictTo} = require('./middlewares/auth')
 
 // Connection with DB
 connectMongoDB(process.env.MONGODB_URI)
@@ -26,13 +26,14 @@ app.use(express.static("public"));
 //   saveUninitialized: false,
 // }));
 app.use(cookieParser())
+app.use(authenticationCheck)
 
 // ejs setup
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views/src"));
 
 // Router
-app.use("/url", restrictToLoggedIn, urlRoute);
+app.use("/url", restrictTo(['NORMAL']), urlRoute);
 app.use("/", staticUrl);
 app.use("/user", userRoute);
 

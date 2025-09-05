@@ -100,7 +100,7 @@ const handleUserSignin = async (req, res) => {
 
   // Auth using JWT
   const token = setUser(user)
-  res.cookie('uid', token)
+  res.cookie('token', token)
   console.log("Token created: ", token)
 
   return res.status(200).redirect("/");
