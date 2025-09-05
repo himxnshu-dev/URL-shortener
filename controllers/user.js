@@ -89,13 +89,19 @@ const handleUserSignin = async (req, res) => {
     });
   }
 
-  // Store the login info in the local session storage
-  //   req.session.userId = user._id;
-  //   console.log(req.session, req.session.id, req.session.userId);
+//   Store the login info in the local session storage
+    // req.session.userId = user._id;
+    // console.log(req.session, req.session.id, req.session.userId);
 
-  const sessionId = uuidv4();
-  setUser(sessionId, user);
-  res.cookie("uid", sessionId);
+    // Using stateful auth using session
+    // const sessionId = uuidv4();
+    // setUser(sessionId, user);
+    // res.cookie("uid", sessionId);
+
+  // Auth using JWT
+  const token = setUser(user)
+  res.cookie('uid', token)
+  console.log("Token created: ", token)
 
   return res.status(200).redirect("/");
 };

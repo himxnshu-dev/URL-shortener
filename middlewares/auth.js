@@ -1,13 +1,18 @@
 const {getUser} = require('../services/auth')
 
 async function restrictToLoggedIn(req, res ,next) {
-    const userId = req.cookies.uid;
-    if (!userId) {
+    // console.log("--- AUTH MIDDLEWARE ---");
+    const token = req.cookies.uid;
+    // console.log("Token received from browser:", token);
+    if (!token) {
+        console.log("No token found, redirecting to signin.");
         return res.redirect('/signin')
     }
 
-    const user = getUser(userId)
+    const user = getUser(token)
+    console.log("User decoded from token:", user);
     if (!user) {
+        console.log("Token invalid or expired, redirecting to signup.");
         return res.redirect('/signin')
     }
 

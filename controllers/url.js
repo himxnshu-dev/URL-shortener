@@ -8,12 +8,12 @@ const handleGenerateShortURL = async (req, res) => {
     const shortID = nanoid(7);
     console.log("ShortID created: ", shortID)
 
-    const sessionId = req.cookies.uid
-    if (!sessionId) {
+    const token = req.cookies.uid
+    if (!token) {
         console.log("ERROR: No sessionId in cookie. Redirecting to signin.");
         return res.render('signin')
     }
-    const user = getUser(sessionId)
+    const user = getUser(token)
     if (!user) {
         console.log("ERROR: No user found for this session ID. Redirecting to signin.");
         return res.render('signin')

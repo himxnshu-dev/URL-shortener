@@ -2,29 +2,32 @@ const express = require("express");
 const router = express.Router();
 const URL = require("../models/url");
 const {getUser} = require("../services/auth");
+const {name} = require("ejs");
 
 router.get("/", async (req, res) => {
-  const sessionId = req.cookies.uid;
-  if (!sessionId) {
-    return res.render("signin", {
-      msg: "You need to sign in first!",
-    });
+//   console.log("--- STATIC URL CHECKS ---");
+  // verify checks and getting the user
+  const token = req.cookies.uid;
+//   console.log("Token received from browser:", token);
+  if (!token) {
+    console.log("No token found, redirecting to signup.");
+    return res.render("signup");
   }
-  const user = getUser(sessionId);
+  const user = getUser(token);
+//   console.log("User decoded from token:", user);
   if (!user) {
-    return res.render("signin", {
-      msg: "You need to sign in first!",
-    });
+    console.log("Token invalid or expired, redirecting to signup.");
+    return res.render("signup");
   }
 
-  const allUrls = await URL.find({createdBy: user._id});
-  const shortId = req.query.id
-//   console.log(shortId)
+  const allUserUrls = await URL.find({createdBy: user._id});
+  const shortUrl = req.query.id;
+//   console.log(user.name)
 
   return res.render("home", {
-    urls: allUrls,
+    urls: allUserUrls,
+    id: shortUrl,
     name: user.name,
-    id: shortId,
   });
 });
 

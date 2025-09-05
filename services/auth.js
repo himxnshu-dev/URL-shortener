@@ -1,13 +1,30 @@
-const sessionIdToUserMap = new Map()
+// const sessionIdToUserMap = new Map() // Stateful auth
 
-function setUser(id, user) {
-    sessionIdToUserMap.set(id, user)
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+function setUser(user) {
+  const {_id, email, name} = user;
+  return jwt.sign(
+    {
+      _id,
+      name,
+      email,
+    },
+    process.env.SECRET_JWT
+  );
 }
-function getUser(id) {
-    return sessionIdToUserMap.get(id)
+function getUser(token) {
+  if (!token) return null;
+
+  try {
+    return jwt.verify(token, process.env.SECRET_JWT);
+  } catch (error) {
+    return null;
+  }
 }
 
 module.exports = {
-    setUser,
-    getUser
-}
+  setUser,
+  getUser,
+};

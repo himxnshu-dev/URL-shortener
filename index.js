@@ -7,7 +7,7 @@ const staticUrl = require("./routes/staticUrl");
 const userRoute = require("./routes/user");
 const path = require("path");
 require('dotenv').config()
-const session = require('express-session');
+// const session = require('express-session');
 const cookieParser = require('cookie-parser')
 const {restrictToLoggedIn} = require('./middlewares/auth')
 
@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static("public"));
 // app.use(session({
-//   secret: 'eyTk*5Z9PWh.GV!gTk*5Z9PWh.GV!g', // A random string to sign the session ID cookie
+//   secret: '', // A random string to sign the session ID cookie
 //   resave: false,
 //   saveUninitialized: false,
 // }));
