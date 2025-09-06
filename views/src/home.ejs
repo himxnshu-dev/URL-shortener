@@ -88,7 +88,9 @@
       </table>
       <% } %>
 
-      
+      <% if (locals.role === 'ADMIN') { %>
+       <p>Click <a href="/admin/url">here</a> to view all the shortened URLs.</p>
+      <% } %>
 
       <div class="signout">
         <form action="/user/signout" method="get">

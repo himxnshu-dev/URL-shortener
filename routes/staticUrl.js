@@ -25,4 +25,11 @@ router.get("/signin", (req, res) => {
   return res.render("signin");
 });
 
+router.get('/admin/url', restrictTo(['ADMIN']), async(req, res) => {
+    const allUrls = await URL.find({})
+    return res.render('home', {
+        urls: allUrls,
+    })
+})
+
 module.exports = router;
