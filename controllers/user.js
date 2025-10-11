@@ -1,35 +1,14 @@
 const User = require("../models/user");
-const z = require("zod");
 const {v4: uuidv4} = require("uuid");
 const {setUser} = require("../services/auth");
-
-// Input validation using zod
-const emailValidation = z
-  .string()
-  .email({message: "Invalid email format"})
-  // This regex checks for a standard email pattern: user@domain.extension
-  .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-    message: "Email must be a valid address with a domain.",
-  });
-
-const signupValidationSchema = z.object({
-  name: z.string().min(2, {message: "Name must be at least 2 characters"}),
-  // ✅ UPDATE THIS LINE
-  email: emailValidation,
-  password: z
-    .string()
-    .min(6, {message: "Password must be at least 6 characters"}),
-});
-const signinValidationSchema = z.object({
-  email: emailValidation,
-  password: z
-    .string()
-    .min(6, {message: "Password must be at least 6 characters"}),
-});
+const signinValidationSchema = require('../validations/auth')
+const signupValidationSchema = require('../validations/auth')
+const bcrypt = require('bcrypt')
 
 const handleNewUserSignup = async (req, res) => {
   const {name, email, password} = req.body;
 
+  // Input validation using zod
   const inputValidate = signupValidationSchema.safeParse({
     name,
     email,
@@ -51,7 +30,7 @@ const handleNewUserSignup = async (req, res) => {
       password,
     });
 
-    return res.render("signin");
+    return res.redirect("signin");
   } catch (error) {
     if (error.code === 11000) {
       return res.render("signup", {
@@ -60,15 +39,16 @@ const handleNewUserSignup = async (req, res) => {
     }
 
     // For some other error
-    console.log(error.name);
+    console.log(error);
     return res.status(500).send("Something went wrong!");
   }
 };
 
 const handleUserSignin = async (req, res) => {
-  const {email, password} = req.body;
+    try {
+        const {email, password} = req.body;
 
-  // input validation
+  // Input validation using zod
   const inputValidate = signinValidationSchema.safeParse({email, password});
   if (!inputValidate.success) {
     const fieldErrors = inputValidate.error.flatten().fieldErrors;
@@ -79,35 +59,45 @@ const handleUserSignin = async (req, res) => {
   }
 
   const user = await User.findOne({
-    email,
-    password,
+    email
   });
-
   if (!user) {
     return res.status(403).render("signin", {
       msg: "Invalid credentials, please try again!",
     });
   }
 
-//   Store the login info in the local session storage
-    // req.session.userId = user._id;
-    // console.log(req.session, req.session.id, req.session.userId);
+  const isMatch = await bcrypt.compare(password, user.password)
+  if (!isMatch) return res.render('signin', {
+    errors: "Wrong password!"
+  })
 
-    // Using stateful auth using session
-    // const sessionId = uuidv4();
-    // setUser(sessionId, user);
-    // res.cookie("uid", sessionId);
+  //   Store the login info in the local session storage
+  // req.session.userId = user._id;
+  // console.log(req.session, req.session.id, req.session.userId);
+
+  // Using stateful auth using session
+  // const sessionId = uuidv4();
+  // setUser(sessionId, user);
+  // res.cookie("uid", sessionId);
 
   // Auth using JWT
-  const token = setUser(user)
-  res.cookie('token', token)
-  console.log("Token created: ", token)
+  const token = setUser(user);
+  res.cookie("token", token);
+  console.log("Token created: ", token);
 
   return res.status(200).redirect("/");
+    } catch (err) {
+        console.log(err)
+        return res.render('signin', {
+            msg: "something went wrong during signin"
+        })
+    }
+  
 };
 
 const handleUserLogout = (req, res) => {
-  res.clearCookie("uid");
+  res.clearCookie("token");
 
   return res.redirect("/signin");
 };
